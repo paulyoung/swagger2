@@ -1073,7 +1073,10 @@ instance ToJSON SecuritySchemeType where
     <+> object [ "type" .= ("oauth2" :: Text) ]
 
 instance ToJSON Swagger where
-  toJSON = sopSwaggerGenericToJSON
+  toJSON a = sopSwaggerGenericToJSON a &
+    if InsOrdHashMap.null (_swaggerPaths a)
+    then (<+> object ["paths" .= object []])
+    else id
   DEFINE_TOENCODING
 
 instance ToJSON SecurityScheme where
